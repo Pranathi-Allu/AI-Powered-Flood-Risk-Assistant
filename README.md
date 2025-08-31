@@ -2,7 +2,7 @@
 
 ## 📌 Project Overview
 This project is part of my **AI & ML learning journey**.  
-The goal is to build an **AI-powered assistant** that helps assess and manage **flood risk** by analyzing multiple datasets such as precipitation, elevation, river networks, and population exposure.
+The AI-Powered Flood Risk Assistant is designed to analyze flood-prone areas by integrating multiple datasets such as precipitation, elevation, river networks, administrative boundaries, and population exposure. The goal is to support early flood risk assessment and decision-making using geospatial and AI-driven approaches.
 
 ## 📂 Datasets
 The datasets used in this project include:
