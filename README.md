@@ -10,7 +10,9 @@ The datasets used in this project include:
 - 🏔️ Elevation data  
 - 🗺️ Administrative boundaries (GADM)  
 - 🌊 River network data (HydroRIVERS)  
-- 👥 Population distribution data  
+- 👥 Population distribution data
+
+  (Note: Need to add some more datasets like Historical flood events and soil moisture to make predictions)
 
 📥 All datasets are available on **Kaggle** (beacuse all the datasets which I used are too large):  
 👉 [Download Datasets Here](https://www.kaggle.com/datasets/allupranathi/ai-powered-flood-risk-assistant)
