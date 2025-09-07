@@ -12,6 +12,7 @@ The datasets used in this project include:
 - 🌊 River network data (HydroRIVERS)  
 - 👥 Population distribution data
 - 🌐 Kerala past flood dataset (Flood / No Flood samples)
+  (I got this kerala past flood dataset from NASA Earth data. I already included the code for getting the dataset "Kerala_precipitation_data.py" (refer that file)).
 
 📥 All datasets are available on **Kaggle** (beacuse all the datasets which I used are too large):  
 👉 [Download Datasets Here](https://www.kaggle.com/datasets/allupranathi/ai-powered-flood-risk-assistant)
