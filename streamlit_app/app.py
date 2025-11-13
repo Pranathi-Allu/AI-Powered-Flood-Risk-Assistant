@@ -20,7 +20,7 @@ SCALER_PATH = PROJECT_ROOT / "models" / "scaler_v2.pkl"
 # --- APIs (fallback keys) ---
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 # Use a fallback key just in case 
-OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API", "25ac8c6e091d7626e3b6b35a4ad5e1d8")
+OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API", "")
 
 # --- DEFAULT FEATURE ORDER (avoids NoneType crash) ---
 FEATURE_ORDER = ['rainfall_24h_mm', 'river_level_m', 'elevation_m', 'slope_deg', 'pop_density', 'soil_saturation']
@@ -131,7 +131,7 @@ if mode == "📡 Live Data (Simulated)":
         st.metric("⚠️ Flood Risk", risk_label(prob, threshold), f"{prob*100:.1f}%")
 
 else:
-    st.header("🧪 Manual Input (Recommended for Demo)")
+    st.header("🧪 Manual Input")
     with st.form("prediction_form"):
         col1, col2 = st.columns(2)
         with col1:
@@ -196,3 +196,4 @@ else:
     st.chat_message("assistant").write("Namaskaram! I can help with: 🚨 Evacuation steps • 🏠 Nearby shelters • 📞 Emergency contacts • 🩹 First aid in floods")
 
 st.markdown("---")
+
