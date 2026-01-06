@@ -17,12 +17,10 @@ PROJECT_ROOT = SCRIPT_DIR.parent
 MODEL_PATH = PROJECT_ROOT / "models" / "flood_model_v2.pkl"
 SCALER_PATH = PROJECT_ROOT / "models" / "scaler_v2.pkl"
 
-# --- APIs (fallback keys) ---
+
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-# Use a fallback key just in case 
 OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API", "")
 
-# --- DEFAULT FEATURE ORDER (avoids NoneType crash) ---
 FEATURE_ORDER = ['rainfall_24h_mm', 'river_level_m', 'elevation_m', 'slope_deg', 'pop_density', 'soil_saturation']
 
 # --- LOAD MODEL & SCALER ---
@@ -49,20 +47,19 @@ art = load_ml_artifacts()
 model = art["model"]
 scaler = art["scaler"]
 
-# SAFE fetch_live_weather
+
 def fetch_live_weather(lat, lon):
-    # simulate realistic live data (no API call!)
-    # Replace with real API later if needed
+    
     return {
-        "rainfall_24h_mm": 85.2,   # ← realistic monsoon value
+        "rainfall_24h_mm": 85.2,   
         "temp_c": 29.5,
         "humidity": 88,
         "wind_m_s": 3.2,
     }
 
-# --- PREPARE FEATURES ---
+
 def prepare_features(raw: dict):
-    # Use hard-coded FEATURE_ORDER (no dependency on missing files)
+
     df_row = pd.DataFrame([raw])
     for feat in FEATURE_ORDER:
         if feat not in df_row.columns:
@@ -163,7 +160,7 @@ else:
 st.markdown("---")
 st.subheader("💬 FloodBot — AI Emergency Assistant")
 
-# Use a minimal working FloodBot or mock it
+
 if GOOGLE_API_KEY:
     try:
         import google.generativeai as genai
@@ -196,4 +193,5 @@ else:
     st.chat_message("assistant").write("Namaskaram! I can help with: 🚨 Evacuation steps • 🏠 Nearby shelters • 📞 Emergency contacts • 🩹 First aid in floods")
 
 st.markdown("---")
+
 
