@@ -19,11 +19,11 @@ gdf_rivers = gpd.read_file(r"C:\ML Projects\AI Project\AI-Powered-Flood-Risk-Ass
 
 # Get bounding box of flood points (in WGS84)
 kerala_bbox = gdf_flood.total_bounds  # [minx, miny, maxx, maxy]
-print(f"📍 Kerala Bounding Box: {kerala_bbox}")
+print(f"Kerala Bounding Box: {kerala_bbox}")
 
 # Spatially filter rivers to bounding box (speeds up processing)
 gdf_rivers = gdf_rivers.cx[kerala_bbox[0]:kerala_bbox[2], kerala_bbox[1]:kerala_bbox[3]]
-print(f"🌊 Rivers in bbox: {len(gdf_rivers)}")
+print(f"Rivers in bbox: {len(gdf_rivers)}")
 
 # 3. Project to UTM Zone 43N (EPSG:32643) for accurate distance in meters
 gdf_flood = gdf_flood.to_crs("EPSG:32643")
@@ -40,7 +40,7 @@ for geom in gdf_rivers.geometry:
 
 # Filter valid points and extract coordinates
 river_coords = np.array([[p.x, p.y] for p in river_points if p.is_valid])
-print(f"💧 Sampled river points: {len(river_coords)}")
+print(f"Sampled river points: {len(river_coords)}")
 
 # 5. Extract flood point coordinates (in meters, UTM)
 flood_coords = np.array([[geom.x, geom.y] for geom in gdf_flood.geometry])
@@ -59,4 +59,5 @@ output_path = r"C:\ML Projects\AI Project\AI-Powered-Flood-Risk-Assistant\data\p
 df.to_csv(output_path, index=False)
 
 print("Added distance to nearest river (in km)!")
+
 print(df[['latitude', 'longitude', 'distance_to_river_km']].head())
