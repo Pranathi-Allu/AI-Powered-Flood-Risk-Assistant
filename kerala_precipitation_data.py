@@ -17,13 +17,13 @@ lon_min, lon_max = 74.8, 77.5
 start_date = datetime.date(2000, 6, 1)
 end_date = datetime.date(2000, 6, 5)  # Example; expand as needed
 
-# --- Earthdata Credentials ---
+#Earthdata Credentials
 # For better security, create a .netrc file in your home directory
 # with the following content:
 # machine urs.earthdata.nasa.gov login YOUR_USERNAME password YOUR_PASSWORD
 # If you don't use a .netrc file, replace the placeholders below.
-USERNAME = "pranathi_allu"  # Replace with your NASA Earthdata username
-PASSWORD = "Pranathi@2910"  # Replace with your NASA Earthdata password
+USERNAME = ""  # NASA Earthdata username
+PASSWORD = ""  # NASA Earthdata password
 
 # Base URL templates for GPM IMERG Final Daily (V07)
 url_template = "https://gpm1.gesdisc.eosdis.nasa.gov/opendap/GPM_L3/GPM_3IMERGDF.07/{year}/{month}/3B-DAY.MS.MRG.3IMERG.{ymd}-S000000-E235959.V07B.HDF5"
@@ -35,19 +35,17 @@ output_csv = r"kerala_precipitation_daily.csv"
 output_dir = os.path.dirname(output_csv)
 if output_dir and not os.path.exists(output_dir):
     os.makedirs(output_dir)
-    print(f"📁 Created output directory: {output_dir}")
+    print(f"Created output directory: {output_dir}")
 
-# ---------------------------------------------------------
 # FUNCTION TO CHECK NETWORK CONNECTIVITY
-# ---------------------------------------------------------
 def check_network(hostname="gpm1.gesdisc.eosdis.nasa.gov"):
     """Checks for a connection to the data server."""
     try:
         socket.create_connection((hostname, 443), timeout=5)
-        print(f"✅ Successfully connected to {hostname}")
+        print(f"Successfully connected to {hostname}")
         return True
     except (socket.gaierror, socket.timeout) as e:
-        print(f"⚠️ Network error: Cannot connect to {hostname} - {e}")
+        print(f"Network error: Cannot connect to {hostname} - {e}")
         return False
 
 # FUNCTION TO DOWNLOAD AND PROCESS HDF5 DATA
@@ -68,7 +66,7 @@ def get_precip_from_hdf(url, date_str, session):
             with h5py.File(temp_file, 'r') as f:
                 # The correct dataset path for V07 is 'Grid/precipitation'
                 if 'Grid/precipitation' not in f:
-                    print(f"⚠️ Dataset 'Grid/precipitation' not found in {url}")
+                    print(f" Dataset 'Grid/precipitation' not found in {url}")
                     return None
                 
                 precip_data = f['Grid/precipitation'][:]
@@ -80,7 +78,7 @@ def get_precip_from_hdf(url, date_str, session):
                 lon_idx = np.where((lons >= lon_min) & (lons <= lon_max))[0]
 
                 if len(lat_idx) == 0 or len(lon_idx) == 0:
-                    print(f"⚠️ No data within bounding box for {date_str}")
+                    print(f"No data within bounding box for {date_str}")
                     return None
 
                 # Use np.ix_ to correctly select a rectangular subset (grid).
@@ -96,18 +94,18 @@ def get_precip_from_hdf(url, date_str, session):
     except requests.exceptions.HTTPError as he:
         # Handle 404 errors for dates where data might not exist
         if he.response.status_code == 404:
-            print(f"ℹ️ Data not found for {date_str} (HTTP 404). This is normal for some dates.")
+            print(f" Data not found for {date_str} (HTTP 404). This is normal for some dates.")
         else:
-            print(f"⚠️ HTTP error for {date_str}: {he}")
+            print(f"HTTP error for {date_str}: {he}")
         return None
     except requests.exceptions.RequestException as re:
-        print(f"⚠️ Request error for {date_str}: {re}")
+        print(f" Request error for {date_str}: {re}")
         return None
     except (OSError, h5py.Error) as oe:
-        print(f"⚠️ HDF5 or file error for {date_str}: {oe}")
+        print(f" HDF5 or file error for {date_str}: {oe}")
         return None
     except Exception as e:
-        print(f"⚠️ An unexpected error occurred for {date_str}: {e}")
+        print(f" An unexpected error occurred for {date_str}: {e}")
         return None
     finally:
         # Clean up the temporary file
@@ -115,11 +113,11 @@ def get_precip_from_hdf(url, date_str, session):
             try:
                 os.remove(temp_file)
             except OSError as e:
-                print(f"⚠️ Error deleting temporary file {temp_file}: {e}")
+                print(f"Error deleting temporary file {temp_file}: {e}")
 
 # Check network first
 if not check_network():
-    print("❌ Exiting due to network connectivity issues.")
+    print(" Exiting due to network connectivity issues.")
     exit(1)
 
 # Set up a session with automatic retries for temporary server issues
@@ -132,9 +130,9 @@ try:
     info = netrc()
     login, _, password = info.authenticators("urs.earthdata.nasa.gov")
     session.auth = (login, password)
-    print("🔑 Successfully using credentials from .netrc file.")
+    print(" Successfully using credentials from .netrc file.")
 except (FileNotFoundError, TypeError):
-    print("ℹ️ .netrc file not found. Using credentials from script.")
+    print(" .netrc file not found. Using credentials from script.")
     session.auth = (USERNAME, PASSWORD)
 
 
@@ -154,26 +152,23 @@ while current_date <= end_date:
     precip = get_precip_from_hdf(url, ymd, session)
     
     if precip is not None and not np.isnan(precip):
-        print(f"✅ {ymd} : {precip:.2f} mm/day")
+        print(f"{ymd} : {precip:.2f} mm/day")
         records.append({"date": current_date, "precip_mm": precip})
     else:
-        print(f"❌ Failed to retrieve valid data for {ymd}")
-        # Optionally, you can add a row with null data
-        # records.append({"date": current_date, "precip_mm": np.nan})
+        print(f" Failed to retrieve valid data for {ymd}")
 
     current_date += datetime.timedelta(days=1)
 
-# ---------------------------------------------------------
 # SAVE RESULTS TO CSV
-# ---------------------------------------------------------
 if records:
     df = pd.DataFrame(records)
     df['date'] = pd.to_datetime(df['date'])
     
     try:
         df.to_csv(output_csv, index=False)
-        print(f"\n🎉 Success! Kerala daily precipitation data saved to:\n{os.path.abspath(output_csv)}")
+        print(f"\nSuccess! Kerala daily precipitation data saved to:\n{os.path.abspath(output_csv)}")
     except Exception as e:
-        print(f"⚠️ Error saving the final CSV file: {e}")
+        print(f"Error saving the final CSV file: {e}")
 else:
-    print("\n⚠️ No data was collected. The CSV file was not created.")
+
+    print("\nNo data was collected. The CSV file was not created.")
