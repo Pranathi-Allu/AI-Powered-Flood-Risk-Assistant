@@ -1,6 +1,6 @@
 import pandas as pd
 
-# Path to your original CSV
+# Path to original CSV
 input_csv = r"C:\ML Projects\AI Project\AI-Powered-Flood-Risk-Assistant\data\preprocessed\kerala_flood_final_withRainfall.csv"
 output_csv = r"C:\ML Projects\AI Project\AI-Powered-Flood-Risk-Assistant\data\preprocessed\kerala_flood_final_withRainfall_WITH_LABELS.csv"
 
@@ -34,10 +34,11 @@ print(f"Filled {nan_count} NaN values in 'flooded_2018' with 0")
 # Check for unmapped districts (if any remain)
 unmapped = df[df['district'].isin(flooded_2018_map.keys()) == False]['district'].dropna().unique()
 if len(unmapped) > 0:
-    print("⚠️ Warning: Unmapped districts found:", unmapped)
+    print("Warning: Unmapped districts found:", unmapped)
 else:
     print("All district names matched successfully!")
 
 # Save updated file
 df.to_csv(output_csv, index=False)
+
 print(f"Saved updated file to: {output_csv}")
